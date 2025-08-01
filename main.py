@@ -37,6 +37,9 @@ def main():
         updateable.update(dt)  # Update the player
         for object in drawable:
             object.draw(screen)  # Draw objects on the screen
+            if object.check_collision(player) and object != player:
+                print("Game Over!")  # Check for collisions with the player
+                return
 
         pygame.display.flip()  # Update the display   
 
