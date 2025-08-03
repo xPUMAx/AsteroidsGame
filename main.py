@@ -5,7 +5,7 @@ import os
 os.environ['SDL_VIDEODRIVER_WINDOW_POS'] = '0, 0'  # initialize the window in the center
 import pygame
 from constants import *
-from player import Player
+from player import Player, Shot
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
 
@@ -19,7 +19,9 @@ def main():
     updateable = pygame.sprite.Group()  # Initialize sprite group for updateable objects
     drawable = pygame.sprite.Group()  # Initialize sprite group for drawable objects
     asteroids = pygame.sprite.Group()  # Initialize sprite group for asteroids
+    shots = pygame.sprite.Group()  # Initialize sprite group for shots
     Player.containers = (updateable, drawable)  # Set the containers for Player class
+    Shot.containers = (shots, drawable, updateable)  # Set the containers for Shot class
     Asteroid.containers = (asteroids, updateable, drawable)  # Set the containers for Asteroid class
     AsteroidField.containers = (updateable)  # Create an asteroid field instance
 
@@ -37,8 +39,17 @@ def main():
         updateable.update(dt)  # Update the player
         for object in drawable:
             object.draw(screen)  # Draw objects on the screen
-            if object.check_collision(player) and object != player:
-                print("Game Over!")  # Check for collisions with the player
+
+            # Check for shot collisions with asteroids
+            for asteroid in asteroids:
+                for shot in shots:
+                    if asteroid.check_collision(shot):
+                        asteroid.kill()
+                        shot.kill()
+
+            # Check for collisions with the player, end game if collision occurs
+            if object.check_collision(player) and (object != player and not isinstance(object, Shot)):
+                print("Game Over!")
                 return
 
         pygame.display.flip()  # Update the display   
