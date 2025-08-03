@@ -1,6 +1,3 @@
-# this allows us to use code from
-# the open-source pygame library
-# throughout this file
 import os
 os.environ['SDL_VIDEODRIVER_WINDOW_POS'] = '0, 0'  # initialize the window in the center
 import pygame
@@ -44,6 +41,7 @@ def main():
             for asteroid in asteroids:
                 for shot in shots:
                     if asteroid.check_collision(shot):
+                        asteroid.split()  # Split the asteroid if it is hit
                         asteroid.kill()
                         shot.kill()
 
