@@ -8,8 +8,19 @@ from asteroidfield import AsteroidField
 
 def main():
     pygame.init()  # Initialize all imported pygame modules
+    pygame.font.init()  # Initialize the font module
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  # Create the game window
     pygame.display.set_caption("Asteroids Game")  # Set the window title
+
+    #INITIALIZE GAME VARIABLES
+    title_font = pygame.font.Font(None, SCREEN_HEIGHT // 5)  # Create a font object for the title
+    subtitle_font = pygame.font.Font(None, SCREEN_HEIGHT // 10)  # Create a font object for the subtitle
+    score_font = pygame.font.Font(None, SCREEN_HEIGHT // 30)  # Create a font object for the score
+
+    player_score  = 0  # Initialize player score
+    score_text = score_font.render(f"Score: {player_score}", True, (255, 255, 255))  # Render the score text
+    title_text = title_font.render("Asteroids", True, (255, 255, 255))  # Render the title text
+    subtitle_text = subtitle_font.render("By PUMAx", True, (255, 255, 255))  # Render the subtitle text
 
     gameClock = pygame.time.Clock()
     dt = 0  # Initialize delta time
@@ -25,13 +36,25 @@ def main():
     player = Player(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)  # Create a player instance
     asteroidfield = AsteroidField()  # Create an asteroid field instance
 
-    while True:
+    running = True
+    show_title = True  # Flag to show the title screen
+
+    while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                return
+                running = False # Quit the game
+            elif event.type == pygame.KEYDOWN:
+                show_title = False  # Hide the title screen when a key is pressed
 
         dt = gameClock.tick(60)/1000  # Limit the frame rate to 60 FPS and returns seconds to delta time
         screen.fill((0, 0, 0))  # Fill the screen with black
+
+        if show_title:
+            # Display the title screen
+            screen.blit(title_text, (SCREEN_WIDTH // 2 - title_text.get_width() // 2, SCREEN_HEIGHT // 5))
+            screen.blit(subtitle_text, (SCREEN_WIDTH // 2 - subtitle_text.get_width() // 2, (SCREEN_HEIGHT // 5) + (SCREEN_HEIGHT // 5)))
+        else: 
+            screen.blit(score_text, (10, 10))  # Draw the score text
         
         updateable.update(dt)  # Update the player
         for object in drawable:
@@ -42,6 +65,8 @@ def main():
                 for shot in shots:
                     if asteroid.check_collision(shot):
                         asteroid.split()  # Split the asteroid if it is hit
+                        player_score += ASTEROID_POINT_VALUE
+                        score_text = score_font.render(f"Score: {player_score}", True, (255, 255, 255))
                         asteroid.kill()
                         shot.kill()
 
