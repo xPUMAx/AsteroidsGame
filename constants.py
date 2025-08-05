@@ -23,3 +23,5 @@ SHOT_RADIUS = 5
 TITLE_TEXT = "Asteroids"
 AUTHOR_TEXT = "By PUMAx"
 GAMEOVER_TEXT = "GAME OVER"
+INSTRUCTIONS_TEXT = "Press any key to start"
+EXIT_TEXT = "Press ESC to exit"
