@@ -14,11 +14,7 @@ def main():
     pygame.display.set_caption("Asteroids Game")  # Set the window title
 
     #INITIALIZE GAME VARIABLES
-    title_font = pygame.font.Font(None, SCREEN_HEIGHT // 5)  # Create a font object for the title
-    author_font = pygame.font.Font(None, SCREEN_HEIGHT // 15)  # Create a font object for the subtitle
-    score_font = pygame.font.Font(None, SCREEN_HEIGHT // 30)  # Create a font object for the score
-    end_score_font = pygame.font.Font(None, SCREEN_HEIGHT // 15)  # Create a font object for the end score
-    gameover_font = pygame.font.Font(None, SCREEN_HEIGHT // 10)  # Create a font object for the game over text
+
     player_score  = 0  # Initialize player score  
     
     gameClock = pygame.time.Clock()
@@ -43,8 +39,11 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False # Quit the game
-            elif event.type == pygame.KEYDOWN:
+            
+            if event.type == pygame.KEYDOWN:
                 show_title = False  # Hide the title screen when a key is pressed
+                if event.key == pygame.K_ESCAPE:
+                    return  # Exit the game if ESC is pressed
 
         dt = gameClock.tick(60)/1000  # Limit the frame rate to 60 FPS and returns seconds to delta time
         screen.fill((0, 0, 0))  # Fill the screen with black
@@ -59,26 +58,26 @@ def main():
                     if asteroid.check_collision(shot):
                         asteroid.split()  # Split the asteroid if it is hit
                         player_score += asteroid.point_value()  # Increase player score
-                        render_score(screen, score_font, player_score)  # Update the score display
+                        render_score(screen, player_score)  # Update the score display
                         asteroid.kill()
                         shot.kill()
 
             # Check for collisions with the player, end game if collision occurs
-            if object.check_collision(player) and (object != player and not isinstance(object, Shot)):
+            if object.check_collision(player) and (object != player and not isinstance(object, Shot) and not show_title):
                 show_gameover = True  # Show game over screen
                 player.kill()
 
         #DISPLAY GAME TEXT
-        if show_title:
-            # Display the title screen
-            render_title(screen, title_font)
-            render_author(screen, author_font)
-        elif show_gameover:
-            # Display the game over screen
-            render_gameover(screen, gameover_font)
-            render_end_score(screen, end_score_font, player_score)
-        else: 
-            render_score(screen, score_font, player_score)  # Draw the score text
+        if show_title: # Display the title screen
+            render_title(screen)
+            render_author(screen)
+            render_instructions(screen)
+        elif show_gameover: # Display the game over screen
+            render_gameover(screen)
+            render_end_score(screen, player_score)
+            render_exit(screen)
+        else:  # Draw the score text
+            render_score(screen, player_score)
 
         pygame.display.flip()  # Update the display   
 
