@@ -48,3 +48,9 @@ class Asteroid(CircleShape):
             asteroid1.velocity = self.velocity.rotate(new_angle) * random.uniform(1, ASTEROID_MAX_SPEED_CHANGE)
             asteroid2.velocity = self.velocity.rotate(-new_angle) * random.uniform(1, ASTEROID_MAX_SPEED_CHANGE)
 
+    def point_value(self):
+        # Calculate the point value based on the asteroid's speed and radius
+        points = int((abs(self.velocity[0]) + abs(self.velocity[1])) // ASTEROID_POINT_DENOMINATOR - self.radius // ASTEROID_POINT_DENOMINATOR)
+        if points <= 0:
+            points = 1
+        return points

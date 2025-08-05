@@ -65,7 +65,7 @@ def main():
                 for shot in shots:
                     if asteroid.check_collision(shot):
                         asteroid.split()  # Split the asteroid if it is hit
-                        player_score += ASTEROID_POINT_VALUE
+                        player_score += asteroid.point_value()  # Increase player score
                         score_text = score_font.render(f"Score: {player_score}", True, (255, 255, 255))
                         asteroid.kill()
                         shot.kill()
