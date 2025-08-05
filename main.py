@@ -14,13 +14,16 @@ def main():
 
     #INITIALIZE GAME VARIABLES
     title_font = pygame.font.Font(None, SCREEN_HEIGHT // 5)  # Create a font object for the title
+    #gameover_font = pygame.font.Font(None, SCREEN_HEIGHT // 5)  # Create a font object for the game over text
     subtitle_font = pygame.font.Font(None, SCREEN_HEIGHT // 10)  # Create a font object for the subtitle
     score_font = pygame.font.Font(None, SCREEN_HEIGHT // 30)  # Create a font object for the score
 
     player_score  = 0  # Initialize player score
     score_text = score_font.render(f"Score: {player_score}", True, (255, 255, 255))  # Render the score text
+    end_score_text = subtitle_font.render(f"Score: {player_score}", True, (255, 255, 255))  # Render the final score text
     title_text = title_font.render("Asteroids", True, (255, 255, 255))  # Render the title text
-    subtitle_text = subtitle_font.render("By PUMAx", True, (255, 255, 255))  # Render the subtitle text
+    author_text = subtitle_font.render("By PUMAx", True, (255, 255, 255))  # Render the subtitle text
+    gameover_text = subtitle_font.render("Game Over", True, (255, 255, 255))  # Render the game over text
 
     gameClock = pygame.time.Clock()
     dt = 0  # Initialize delta time
@@ -38,6 +41,7 @@ def main():
 
     running = True
     show_title = True  # Flag to show the title screen
+    show_gameover = False  # Flag to show the game over screen
 
     while running:
         for event in pygame.event.get():
@@ -52,7 +56,11 @@ def main():
         if show_title:
             # Display the title screen
             screen.blit(title_text, (SCREEN_WIDTH // 2 - title_text.get_width() // 2, SCREEN_HEIGHT // 5))
-            screen.blit(subtitle_text, (SCREEN_WIDTH // 2 - subtitle_text.get_width() // 2, (SCREEN_HEIGHT // 5) + (SCREEN_HEIGHT // 5)))
+            screen.blit(author_text, (SCREEN_WIDTH // 2 - author_text.get_width() // 2, (SCREEN_HEIGHT // 5) + (SCREEN_HEIGHT // 5)))
+        elif show_gameover:
+            # Display the game over screen
+            screen.blit(gameover_text, (SCREEN_WIDTH // 2 - gameover_text.get_width() // 2, SCREEN_HEIGHT // 3))
+            screen.blit(end_score_text, (SCREEN_WIDTH // 2 - end_score_text.get_width() // 2, (SCREEN_HEIGHT // 3) + (SCREEN_HEIGHT // 5)))
         else: 
             screen.blit(score_text, (10, 10))  # Draw the score text
         
@@ -67,13 +75,14 @@ def main():
                         asteroid.split()  # Split the asteroid if it is hit
                         player_score += asteroid.point_value()  # Increase player score
                         score_text = score_font.render(f"Score: {player_score}", True, (255, 255, 255))
+                        end_score_text = subtitle_font.render(f"Score: {player_score}", True, (255, 255, 255))
                         asteroid.kill()
                         shot.kill()
 
             # Check for collisions with the player, end game if collision occurs
             if object.check_collision(player) and (object != player and not isinstance(object, Shot)):
-                print("Game Over!")
-                return
+                show_gameover = True  # Show game over screen
+                player.kill()
 
         pygame.display.flip()  # Update the display   
 
