@@ -40,5 +40,9 @@ def render_exit(screen):
     exit_text = instructions_font.render(EXIT_TEXT, True, (255, 255, 255))
     screen.blit(exit_text, (get_text_horizontal_center_position(exit_text), SCREEN_HEIGHT - 20 - exit_text.get_height()))
 
+def render_restart(screen):
+    restart_text = instructions_font.render(RESTART_TEXT, True, (255, 255, 255))
+    screen.blit(restart_text, (get_text_horizontal_center_position(restart_text), SCREEN_HEIGHT - 50 - restart_text.get_height()))
+
 def get_text_horizontal_center_position(text):
     return (SCREEN_WIDTH // 2 - text.get_width() // 2)

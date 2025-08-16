@@ -44,6 +44,15 @@ def main():
                 show_title = False  # Hide the title screen when a key is pressed
                 if event.key == pygame.K_ESCAPE:
                     return  # Exit the game if ESC is pressed
+                if event.key == pygame.K_RETURN and show_gameover:
+                    # restart game
+                    player_score = 0
+                    show_gameover = False
+                    player = Player(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+                    asteroidfield.kill()  # Remove the old asteroid field
+                    for asteroid in asteroids:
+                        asteroid.kill()
+                    asteroidfield = AsteroidField()
 
         dt = gameClock.tick(60)/1000  # Limit the frame rate to 60 FPS and returns seconds to delta time
         screen.fill((0, 0, 0))  # Fill the screen with black
@@ -76,6 +85,7 @@ def main():
             render_gameover(screen)
             render_end_score(screen, player_score)
             render_exit(screen)
+            render_restart(screen)
         else:  # Draw the score text
             render_score(screen, player_score)
 
